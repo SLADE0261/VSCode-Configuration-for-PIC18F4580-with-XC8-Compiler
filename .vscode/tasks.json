@@ -1,0 +1,202 @@
+// {
+//   "version": "2.0.0",
+//   "tasks": [
+//     {
+//       "label": "Build XC8 - MPLAB Compatible",
+//       "type": "shell",
+//       "command": "cmd.exe",
+//       "args": [
+//         "/d",
+//         "/c",
+//         "xc8-cc -mcpu=18F4580 -I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\" -I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\\proc\" -mreserve=rom@0x0:0x5FF -mreserve=rom@0x17F0:0x17FF \"${input:projectFolder}\\main.c\" -o \"${input:projectFolder}\\main.hex\" && powershell -NoProfile -Command \"$p = (Resolve-Path '${input:projectFolder}\\main.hex').Path -replace '\\\\', '/'; Write-Host \\\"HEX file created: $p\\\"\""
+//       ],
+//       "options": {
+//         "cwd": "${workspaceFolder}",
+//         "shell": {
+//           "executable": "cmd.exe",
+//           "args": ["/d", "/c"]
+//         }
+//       },
+//       "group": {
+//         "kind": "build",
+//         "isDefault": true
+//       },
+//       "problemMatcher": [],
+//       "detail": "Build with memory reservations and include directories like MPLAB"
+//     }
+//   ],
+//   "inputs": [
+//     {
+//       "id": "projectFolder",
+//       "type": "promptString",
+//       "description": "Enter folder path containing main.c (relative to workspace)",
+//       "default": "."
+//     }
+//   ]
+// }
+
+
+
+// {
+//   "version": "2.0.0",
+//   "tasks": [
+//     {
+//       "label": "Build XC8 - All .c Files",
+//       "type": "shell",
+//       "command": "powershell.exe",
+//       "args": [
+//         "-NoProfile",
+//         "-Command",
+//         "$folder = '${input:projectFolder}'; " +
+//         "$srcs = Get-ChildItem -Path $folder -Filter '*.c' | ForEach-Object { $_.FullName }; " +
+//         "$outHex = Join-Path $folder 'main.hex'; " +
+//         "$compiler = 'C:\\Program Files\\Microchip\\xc8\\v3.00\\bin\\xc8-cc.exe'; " +
+//         "$includes = @('-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\"', '-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\\proc\"'); " +
+//         "$flags = @('-mcpu=18F4580', '-mreserve=rom@0x0:0x5FF', '-mreserve=rom@0x17F0:0x17FF'); " +
+//         "$args = $flags + $includes + $srcs + ('-o', $outHex); " +
+//         "Write-Host 'Running:' $compiler $args; " +
+//         "& $compiler @args; " +
+//         "if (Test-Path $outHex) { Write-Host \"HEX file created: $outHex\" } else { Write-Host \"Build failed.\" }"
+//       ],
+//       "options": {
+//         "cwd": "${workspaceFolder}"
+//       },
+//       "group": {
+//         "kind": "build",
+//         "isDefault": true
+//       },
+//       "problemMatcher": [],
+//       "detail": "Build all .c with memory reservations and include directories like MPLAB with XC8"
+//     }
+//   ],
+//   "inputs": [
+//     {
+//       "id": "projectFolder",
+//       "type": "promptString",
+//       "description": "Enter path like 'Class work/CW06.X'",
+//       "default": "Class work/CW06.X"
+//     }
+//   ]
+// }
+
+
+// {
+//   "version": "2.0.0",
+//   "tasks": [
+//     {
+//       "label": "Build XC8 - MPLAB Compatible",
+//       "type": "shell",
+//       "command": "powershell.exe",
+//       "args": [
+//         "-NoProfile",
+//         "-Command",
+//         "$folder = '${input:projectFolder}'; " +
+//         "$srcs = Get-ChildItem -Path $folder -Filter '*.c' | ForEach-Object { $_.FullName }; " +
+//         "$outHex = Join-Path $folder 'main.hex'; " +
+//         "$compiler = 'C:\\Program Files\\Microchip\\xc8\\v3.00\\bin\\xc8-cc.exe'; " +
+//         "$includes = @('-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\"', '-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\\proc\"'); " +
+//         "$flags = @('-mcpu=18F4580', '-mreserve=rom@0x0:0x5FF', '-mreserve=rom@0x17F0:0x17FF'); " +
+//         "$args = $flags + $includes + $srcs + ('-o', $outHex); " +
+//         "Write-Host 'Running:' $compiler $args; " +
+//         "& $compiler @args; " +
+//         "if (Test-Path $outHex) { $absOutHex = (Resolve-Path $outHex).Path -replace '\\\\', '/'; Write-Host \"HEX file created: $absOutHex\" } else { Write-Host \"Build failed.\" }"
+//       ],
+//       "options": {
+//         "cwd": "${workspaceFolder}"
+//       },
+//       "group": {
+//         "kind": "build",
+//         "isDefault": true
+//       },
+//       "problemMatcher": [],
+//       "detail": "Safely build all .c files using XC8 like MPLAB"
+//     }
+//   ],
+//   "inputs": [
+//     {
+//       "id": "projectFolder",
+//       "type": "promptString",
+//       "description": "Enter folder path containing main.c (relative to workspace)",
+//       "default": "Class work/"
+//     }
+//   ]
+// }
+
+
+// {
+//   "version": "2.0.0",
+//   "tasks": [
+//     {
+//       "label": "Build XC8 - MPLAB Compatible",
+//       "type": "shell",
+//       "command": "powershell.exe",
+//       "args": [
+//         "-NoProfile",
+//         "-Command",
+//         "$folder = '${input:projectFolder}'; " +
+//         "$folderPath = Resolve-Path $folder; " +
+//         "$dist = Join-Path $folderPath 'dist'; " +
+//         "if (!(Test-Path $dist)) { New-Item -Path $dist -ItemType Directory | Out-Null }; " +
+//         "$srcs = Get-ChildItem -Path $folderPath -Filter '*.c' | ForEach-Object { $_.FullName }; " +
+//         "$outHex = Join-Path $dist 'main.hex'; " +
+//         "$compiler = 'C:\\Program Files\\Microchip\\xc8\\v3.00\\bin\\xc8-cc.exe'; " +
+//         "$includes = @('-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\"', '-I\"C:\\Program Files\\Microchip\\xc8\\v3.00\\pic\\include\\proc\"'); " +
+//         "$flags = @('-mcpu=18F4580', '-mreserve=rom@0x0:0x5FF', '-mreserve=rom@0x17F0:0x17FF'); " +
+//         "$args = $flags + $includes + $srcs + ('-o', $outHex); " +
+//         "Write-Host 'Running:' $compiler $args; " +
+//         "& $compiler @args; " +
+//         "if (Test-Path $outHex) { $absOutHex = (Resolve-Path $outHex).Path -replace '\\\\', '/'; Write-Host \"HEX file created: $absOutHex\" } else { Write-Host \"Build failed.\" }"
+//       ],
+//       "options": {
+//         "cwd": "${workspaceFolder}"
+//       },
+//       "group": {
+//         "kind": "build",
+//         "isDefault": true
+//       },
+//       "problemMatcher": [],
+//       "detail": "Safely build all .c files using XC8 like MPLAB"
+//     }
+//   ],
+//   "inputs": [
+//     {
+//       "id": "projectFolder",
+//       "type": "promptString",
+//       "description": "Enter folder path containing main.c (relative to workspace)",
+//       "default": "Class work/"
+//     }
+//   ]
+// }
+
+
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build XC8 - MPLAB Compatible",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File", ".vscode/build-xc8.ps1",
+        "-ProjectFolder", "${input:projectFolder}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "projectFolder",
+      "type": "promptString",
+      "description": "Enter project folder path",
+      "default": "labs/Bit_banging.X"
+    }
+  ]
+}
